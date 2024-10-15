@@ -22,6 +22,8 @@ import { useAirPlay, usePlayer } from './util/hooks';
 import ContextMenu from './components/contextMenu/ContextMenu';
 import CastOverlay from './components/castOverlay/CastOverlay';
 import LiveButton from './components/buttons/liveButton/LiveButton';
+import { exitFullPage, isFullPage, setFullPage } from './util/fullpage';
+import FullPageButton from './components/buttons/fullpage/FullpageButton';
 
 export default function EyevinnSkin({
   player,
@@ -55,6 +57,15 @@ export default function EyevinnSkin({
         : requestFullscreen(rootElement, player.video),
     []
   );
+
+  const toggleFullPage = useCallback((evt) => {
+    if (isFullscreen()) {
+      exitFullscreen();
+    }
+    isFullPage(rootElement)
+      ? exitFullPage(rootElement)
+      : setFullPage(rootElement);
+  }, []);
 
   const [contextMenuState, setContextMenuState] = useState({
     visible: false,
@@ -209,6 +220,9 @@ export default function EyevinnSkin({
             onSliderInput={setVolumeByPercentage}
             volume={state?.volume}
           ></VolumeControls>
+          <FullPageButton
+            isFullPage={isFullPage}
+            onClick={toggleFullPage} />
           <FullscreenButton
             isFullscreen={isFullscreen()}
             onClick={toggleFullscreen}
